@@ -4,7 +4,8 @@ import numpy as np
 
 
 file_suffix = '.csv'
-route_dict = {'A-2':0, 'A-3':100, 'B-1':200, 'B-3':300, 'C-1':400, 'C-3':500}
+# route_dict = {'A-2':0, 'A-3':100, 'B-1':200, 'B-3':300, 'C-1':400, 'C-3':500}
+route_dict = {'B-3': 165.0, 'B-1': 241.0, 'A-3': 276.66666666666663, 'A-2': 111.33333333333333, 'C-3': 260.66666666666663, 'C-1': 336.66666666666663}
 weather_dict = {}
 direction_sum = []
 speed_sum = []
@@ -41,7 +42,7 @@ def create(in_file):
             six_time.append(travel_time)
             if len(six_time) == 6:
                 # print six_time
-                print start_time
+                # print start_time
                 fw = open('testing_travel_data/travel_{}.txt'.format(count), 'w')
                 route_id = route_dict[intersection_id+'-'+tollgate_id]
                 obj_time = start_time_window.hour * 60 + start_time_window.minute
@@ -51,13 +52,13 @@ def create(in_file):
                 fw.write(' ' + str(obj_time/4.0))
 
                 # add weather
-                new_window = start_time_window.replace(minute=0)
-                try:
-                    weather = weather_dict[new_window]
-                except:
-                    weather = ave_list
-                for wea in weather:
-                    fw.write(' ' + str(wea))      
+                # new_window = start_time_window.replace(minute=0)
+                # try:
+                #     weather = weather_dict[new_window]
+                # except:
+                #     weather = ave_list
+                # for wea in weather:
+                #     fw.write(' ' + str(wea))      
                 del six_time[0]
                 count += 1
         else:
@@ -104,8 +105,8 @@ def read_weather_data(in_file):
 
 def main():
     # weather_file = 'training/weather (table 7)_training_update'
-    weather_file = 'testing/weather (table 7)_test1'
-    read_weather_data(weather_file)
+    # weather_file = 'testing/weather (table 7)_test1'
+    # read_weather_data(weather_file)
     # in_file = 'training/training_20min_avg_travel_time'
     in_file = 'testing/test1_20min_avg_travel_time_update'
     create(in_file)

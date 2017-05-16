@@ -6,8 +6,8 @@ from load_data import *
 os.environ["CUDA_VISIBLE_DEVICES"]="0"
 
 # Parameters
-BATCH_SIZE = 1#2
-NUM_STEPS = 13261# * 15
+BATCH_SIZE = 1 #2
+NUM_STEPS = 13261 # * 200
 SAVE_PRED_EVERY = 13261
 TOTAL_DATA = 13261
 LEARNING_RATE = 1e-5
@@ -16,10 +16,10 @@ SNAPSHOT_DIR = './checkpoint'
 LOG_DIR = './logs'
 
 # Network Parameters
-n_hidden_1 = 12 # 1st layer number of features
-n_hidden_2 = 24 # 2nd layer number of features
-n_hidden_3 = 48
-n_input = 12
+n_hidden_1 = 8 # 1st layer number of features
+n_hidden_2 = 12 # 2nd layer number of features
+n_hidden_3 = 16
+n_input = 8
 n_classes = 1
 
 

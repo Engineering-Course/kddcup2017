@@ -5,7 +5,7 @@ def load_train_travel_data(data_id, batch_size):
     x_ = []
     y_ = []
     for id_ in xrange(data_id, data_id + batch_size):
-        filename = 'dataset/dataSets/travel_data2/travel_{}.txt'.format(id_)
+        filename = 'dataset/dataSets/travel_data/travel_{}.txt'.format(id_)
         with open(filename, 'r') as fr:
             line_ = fr.readline()
         data_ = line_.split(' ')

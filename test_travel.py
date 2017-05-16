@@ -11,10 +11,10 @@ NUM_STEPS = 84
 SNAPSHOT_DIR = './checkpoint'
 
 # Network Parameters
-n_hidden_1 = 12 # 1st layer number of features
-n_hidden_2 = 24 # 2nd layer number of features
-n_hidden_3 = 48
-n_input = 12
+n_hidden_1 = 8 # 1st layer number of features
+n_hidden_2 = 12 # 2nd layer number of features
+n_hidden_3 = 16
+n_input = 8
 n_classes = 1
 
 
