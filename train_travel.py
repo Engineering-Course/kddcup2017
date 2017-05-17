@@ -6,12 +6,12 @@ from load_data import *
 os.environ["CUDA_VISIBLE_DEVICES"]="0"
 
 # Parameters
-BATCH_SIZE = 1 #2
-NUM_STEPS = 13261 # * 200
+BATCH_SIZE = 2
+NUM_STEPS = 13261 * 300
 SAVE_PRED_EVERY = 13261
 TOTAL_DATA = 13261
-LEARNING_RATE = 1e-5
-TRAINING_FLAG = False #True
+LEARNING_RATE = 5e-6
+TRAINING_FLAG = True
 SNAPSHOT_DIR = './checkpoint'
 LOG_DIR = './logs'
 
@@ -106,7 +106,7 @@ def main(sess):
     # Saver for storing checkpoints of the model.
     # Restore variables
     restore_var = tf.global_variables()
-    saver = tf.train.Saver(var_list=restore_var, max_to_keep=100)
+    saver = tf.train.Saver(var_list=restore_var, max_to_keep=1000)
     loader = tf.train.Saver(var_list=restore_var)
     if load(loader, sess, SNAPSHOT_DIR):
         print(" [*] Load SUCCESS")
@@ -119,18 +119,26 @@ def main(sess):
             data_id = step * BATCH_SIZE % TOTAL_DATA
             x_, y_ = load_train_travel_data(data_id, BATCH_SIZE)
 
+            summary, _ = sess.run([loss_sum, optimizer], feed_dict={data: x_, label: y_})
+            summary_writer.add_summary(summary, step)
+
             if step % SAVE_PRED_EVERY == 0:
-                summary, _ = sess.run([loss_sum, optimizer], feed_dict={data: x_, label: y_})
-                summary_writer.add_summary(summary, step)
+
                 save(saver, sess, SNAPSHOT_DIR, step)
-            else:
-                summary_str, _ = sess.run([loss_sum, optimizer], feed_dict={data: x_, label: y_})
-                summary_writer.add_summary(summary_str, step)
+                ##  Test...
+                error = []
+                for data_id in range(TOTAL_DATA):
+                    x_, y_ = load_train_travel_data(data_id, BATCH_SIZE)        
+                    y, res = sess.run([label, pred], feed_dict={data: x_, label: y_})
+                    for bb in xrange(BATCH_SIZE):
+                        error.append(np.abs(y[bb][0]-res[bb][0])/y[bb][0])
+                print np.mean(error)
+
             if step % 2000 == 0:
                 y, res = sess.run([label, pred], feed_dict={data: x_, label: y_})
                 print('step {:d} \t y = {:.3f}, res = {:.3f}, loss = {:.3f}'.format(step, y[0][0], res[0][0], np.abs(y[0][0]-res[0][0])/y[0][0]))
     else:
-    	error = []
+        error = []
         for step in range(NUM_STEPS):
             data_id = step * BATCH_SIZE % TOTAL_DATA
             x_, y_ = load_train_travel_data(data_id, BATCH_SIZE)        

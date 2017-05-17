@@ -5,7 +5,7 @@ import numpy as np
 
 file_suffix = '.csv'
 # route_dict = {'A-2':0, 'A-3':100, 'B-1':200, 'B-3':300, 'C-1':400, 'C-3':500}
-route_dict = {'B-3': 165.0, 'B-1': 241.0, 'A-3': 276.66666666666663, 'A-2': 111.33333333333333, 'C-3': 260.66666666666663, 'C-1': 336.66666666666663}
+route_dict = {'B-3': 165.0, 'B-1': 241.0, 'A-3': 276.66, 'A-2': 111.33, 'C-3': 260.66, 'C-1': 336.66}
 weather_dict = {}
 direction_sum = []
 speed_sum = []
@@ -42,7 +42,7 @@ def create(in_file):
             six_time.append(travel_time)
             if len(six_time) == 7:
                 # print six_time
-                fw = open('travel_data2/travel_{}.txt'.format(count), 'w')
+                fw = open('training_travel_data/travel_{}.txt'.format(count), 'w')
                 route_id = route_dict[intersection_id+'-'+tollgate_id]
                 obj_time = start_time_window.hour * 60 + start_time_window.minute
                 fw.write(str(route_id))
@@ -51,13 +51,13 @@ def create(in_file):
                 fw.write(' ' + str(obj_time/4.0))
 
                 # add weather
-                new_window = start_time_window.replace(minute=0)
-                try:
-                    weather = weather_dict[new_window]
-                except:
-                    weather = ave_list
-                for wea in weather:
-                    fw.write(' ' + str(wea))      
+                #new_window = start_time_window.replace(minute=0)
+                #try:
+                #    weather = weather_dict[new_window]
+                #except:
+                #    weather = ave_list
+                #for wea in weather:
+                #    fw.write(' ' + str(wea))      
                 del six_time[0]
                 count += 1
         else:
