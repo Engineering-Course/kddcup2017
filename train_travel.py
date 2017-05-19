@@ -133,8 +133,7 @@ def main(sess):
                     for bb in xrange(BATCH_SIZE):
                         error.append(np.abs(y[bb][0]-res[bb][0])/y[bb][0])
                 print np.mean(error)
-
-            if step % 2000 == 0:
+            #if step % 2000 == 0:
                 y, res = sess.run([label, pred], feed_dict={data: x_, label: y_})
                 print('step {:d} \t y = {:.3f}, res = {:.3f}, loss = {:.3f}'.format(step, y[0][0], res[0][0], np.abs(y[0][0]-res[0][0])/y[0][0]))
     else:
