@@ -3,6 +3,7 @@ import numpy as np
 import os
 import time
 from load_data import *
+from model_setting import *
 os.environ["CUDA_VISIBLE_DEVICES"]="0"
 
 # Parameters
@@ -16,39 +17,14 @@ TRAIN_ID_FILE = 'dataset/dataSets/train_id.txt'
 TEST_ID_FIEL = 'dataset/dataSets/test_id.txt'
 
 # Network Parameters
-n_hidden_1 = 9 # 1st layer number of features
-n_hidden_2 = 12 # 2nd layer number of features
-n_hidden_3 = 16
-n_input = 9
+six_input = 8
+five_input = 7
+four_input = 6
+three_input = 5
+two_input = 4
+one_input = 3
 n_classes = 1
 
-
-
-# Store layers weight & bias
-weights = {
-    'h1': tf.Variable(tf.random_normal([n_input, n_hidden_1], stddev=0.1)),
-    'h2': tf.Variable(tf.random_normal([n_hidden_1, n_hidden_2], stddev=0.1)),
-    'h3': tf.Variable(tf.random_normal([n_hidden_2, n_hidden_3], stddev=0.1)),
-    'out': tf.Variable(tf.random_normal([n_hidden_3, n_classes], stddev=0.1))
-}
-biases = {
-    'b1': tf.Variable(tf.random_normal([n_hidden_1], stddev=0.1)),
-    'b2': tf.Variable(tf.random_normal([n_hidden_2], stddev=0.1)),
-    'b3': tf.Variable(tf.random_normal([n_hidden_3], stddev=0.1)),
-    'out': tf.Variable(tf.random_normal([n_classes], stddev=0.1))
-}
-
-def network(data, name):
-  with tf.variable_scope(name) as scope:
-
-    layer_1 = tf.add(tf.matmul(data, weights['h1']), biases['b1'])
-    layer_1 = tf.nn.relu(layer_1)
-    layer_2 = tf.add(tf.matmul(layer_1, weights['h2']), biases['b2'])
-    layer_2 = tf.nn.relu(layer_2)
-    layer_3 = tf.add(tf.matmul(layer_2, weights['h3']), biases['b3'])
-    layer_3 = tf.nn.relu(layer_3)
-    out_layer = tf.matmul(layer_3, weights['out']) + biases['out']
-    return out_layer
 
 def save(saver, sess, logdir, step):
     '''Save weights.   
@@ -86,19 +62,45 @@ def load(saver, sess, ckpt_path):
         return False  
 
 def main(sess):
-    data = tf.placeholder(tf.float32, [BATCH_SIZE, n_input], name='data')
-    label = tf.placeholder(tf.float32, [BATCH_SIZE, n_classes], name='label')
+    data6 = tf.placeholder(tf.float32, [BATCH_SIZE, six_input], name='data6')
+    data5 = tf.placeholder(tf.float32, [BATCH_SIZE, five_input], name='data5')
+    data4 = tf.placeholder(tf.float32, [BATCH_SIZE, four_input], name='data4')
+    data3 = tf.placeholder(tf.float32, [BATCH_SIZE, three_input], name='data3')
+    data2 = tf.placeholder(tf.float32, [BATCH_SIZE, two_input], name='data2')
+    data1 = tf.placeholder(tf.float32, [BATCH_SIZE, one_input], name='data1')
+    label6 = tf.placeholder(tf.float32, [BATCH_SIZE, n_classes], name='label6')
+    label5 = tf.placeholder(tf.float32, [BATCH_SIZE, n_classes], name='label5')
+    label4= tf.placeholder(tf.float32, [BATCH_SIZE, n_classes], name='label4')
+    label3 = tf.placeholder(tf.float32, [BATCH_SIZE, n_classes], name='label3')
+    label2 = tf.placeholder(tf.float32, [BATCH_SIZE, n_classes], name='label2')
+    label1 = tf.placeholder(tf.float32, [BATCH_SIZE, n_classes], name='label1')
 
-    pred = network(data, 'nn')
+    pred6 = net_six(data6, 'six')
+    pred5 = net_five(data5, 'five')
+    pred4 = net_four(data4, 'four')
+    pred3 = net_three(data3, 'three')
+    pred2 = net_two(data2, 'two')
+    pred1 = net_one(data1, 'one')
 
     # Define loss and optimizer
-    # tf.transpose(pred)
-    cost = tf.reduce_mean(tf.abs(pred - label))
+    cost6 = tf.reduce_mean(tf.abs(pred6 - label6))
+    cost5 = tf.reduce_mean(tf.abs(pred5 - label5))
+    cost4 = tf.reduce_mean(tf.abs(pred4 - label4))
+    cost3 = tf.reduce_mean(tf.abs(pred3 - label3))
+    cost2 = tf.reduce_mean(tf.abs(pred2 - label2))
+    cost1 = tf.reduce_mean(tf.abs(pred1 - label1))
+    cost = cost6 + cost5 + cost4 + cost3 + cost2 + cost1
     optimizer = tf.train.AdamOptimizer(learning_rate=LEARNING_RATE).minimize(cost)
-    # optimizer = tf.train.GradientDescentOptimizer(LEARNING_RATE).minimize(cost)
 
     # loss summary
-    loss_sum = tf.summary.scalar("loss", cost)
+    loss_six = tf.summary.scalar("loss6", cost6)
+    loss_five = tf.summary.scalar("loss5", cost5)
+    loss_four = tf.summary.scalar("loss4", cost4)
+    loss_three = tf.summary.scalar("loss3", cost3)
+    loss_two = tf.summary.scalar("loss2", cost2)
+    loss_one = tf.summary.scalar("loss1", cost1)
+    loss = tf.summary.scalar("loss", cost)
+    loss_sum = tf.summary.merge([loss, loss_six, loss_five, loss_four, loss_three, loss_two, loss_one])
     summary_writer = tf.summary.FileWriter(LOG_DIR, graph=tf.get_default_graph())
 
     tf.global_variables_initializer().run()
@@ -126,7 +128,10 @@ def main(sess):
 
             for idx in xrange(0, batch_idxs):
                 batch_files = data_list[idx*BATCH_SIZE:(idx+1)*BATCH_SIZE]
-                x_, y_ = load_train_travel_data(batch_files)
+                x_6, y_6 = load_train_travel_data_six(batch_files)
+                x_5, y_5 = load_train_travel_data_five(batch_files)
+                x_4, y_4 = load_train_travel_data_four(batch_files)
+
                 summary, _ = sess.run([loss_sum, optimizer], feed_dict={data: x_, label: y_})
                 summary_writer.add_summary(summary, counter)
                 counter += 1

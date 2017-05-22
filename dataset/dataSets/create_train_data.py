@@ -49,6 +49,9 @@ def create(in_file):
                 for tt in six_time:
                     fw.write(' ' + tt)
                 fw.write(' ' + str(obj_time/4.0))
+                weekday = start_time_window.weekday() * 30 + 100
+                fw.write(' ' + str(weekday))
+                
 
                 # add weather
                 #new_window = start_time_window.replace(minute=0)
