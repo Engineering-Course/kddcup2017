@@ -3,14 +3,14 @@ import numpy as np
 import os
 import time
 from load_data import *
-os.environ["CUDA_VISIBLE_DEVICES"]="0"
+os.environ["CUDA_VISIBLE_DEVICES"]="1"
 
 # Parameters
-BATCH_SIZE = 2
-NUM_STEPS = 13261 * 300
-SAVE_PRED_EVERY = 13261
-TOTAL_DATA = 13261
-LEARNING_RATE = 5e-6
+BATCH_SIZE = 3
+NUM_STEPS = 13260 * 500
+SAVE_PRED_EVERY = 13260
+TOTAL_DATA = 13260
+LEARNING_RATE = 1e-5
 TRAINING_FLAG = True
 SNAPSHOT_DIR = './checkpoint'
 LOG_DIR = './logs'
@@ -66,7 +66,7 @@ def save(saver, sess, logdir, step):
     if not os.path.exists(logdir):
       os.makedirs(logdir)
     saver.save(sess, checkpoint_path, global_step=step)
-    print('The checkpoint has been created.')
+    #print('The checkpoint has been created.')
 
 def load(saver, sess, ckpt_path):
     '''Load trained weights.
@@ -106,7 +106,7 @@ def main(sess):
     # Saver for storing checkpoints of the model.
     # Restore variables
     restore_var = tf.global_variables()
-    saver = tf.train.Saver(var_list=restore_var, max_to_keep=1000)
+    saver = tf.train.Saver(var_list=restore_var, max_to_keep=2000)
     loader = tf.train.Saver(var_list=restore_var)
     if load(loader, sess, SNAPSHOT_DIR):
         print(" [*] Load SUCCESS")
@@ -115,6 +115,7 @@ def main(sess):
 
     if TRAINING_FLAG:
         # Iterate over training steps.
+        fi = open('record.txt', 'w')
         for step in range(NUM_STEPS):
             data_id = step * BATCH_SIZE % TOTAL_DATA
             x_, y_ = load_train_travel_data(data_id, BATCH_SIZE)
@@ -122,7 +123,7 @@ def main(sess):
             summary, _ = sess.run([loss_sum, optimizer], feed_dict={data: x_, label: y_})
             summary_writer.add_summary(summary, step)
 
-            if step % SAVE_PRED_EVERY == 0:
+            if step * 3.0 % SAVE_PRED_EVERY == 0:
 
                 save(saver, sess, SNAPSHOT_DIR, step)
                 ##  Test...
@@ -132,10 +133,13 @@ def main(sess):
                     y, res = sess.run([label, pred], feed_dict={data: x_, label: y_})
                     for bb in xrange(BATCH_SIZE):
                         error.append(np.abs(y[bb][0]-res[bb][0])/y[bb][0])
-                print np.mean(error)
+                test_result = np.mean(error)
+                #print test_result
             #if step % 2000 == 0:
                 y, res = sess.run([label, pred], feed_dict={data: x_, label: y_})
-                print('step {:d} \t y = {:.3f}, res = {:.3f}, loss = {:.3f}'.format(step, y[0][0], res[0][0], np.abs(y[0][0]-res[0][0])/y[0][0]))
+                print('test_result: {:f}, epoch {:f}, step {:d}, y = {:.3f}, res = {:.3f}, loss = {:.3f}'.format(test_result, step*3.0/SAVE_PRED_EVERY, step,  y[0][0], res[0][0], np.abs(y[0][0]-res[0][0])/y[0][0]))
+                fi.write('test_result: {:f}, epoch {:f}, step {:d}, y = {:.3f}, res = {:.3f}, loss = {:.3f}\n'.format(test_result, step*3.0/SAVE_PRED_EVERY, step,  y[0][0], res[0][0], np.abs(y[0][0]-res[0][0])/y[0][0]))
+        fi.close()
     else:
         error = []
         for step in range(NUM_STEPS):
