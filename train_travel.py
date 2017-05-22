@@ -3,17 +3,17 @@ import numpy as np
 import os
 import time
 from load_data import *
-os.environ["CUDA_VISIBLE_DEVICES"]="1"
+os.environ["CUDA_VISIBLE_DEVICES"]="0"
 
 # Parameters
-BATCH_SIZE = 3
-NUM_STEPS = 13260 * 500
-SAVE_PRED_EVERY = 13260
-TOTAL_DATA = 13260
+BATCH_SIZE = 5
 LEARNING_RATE = 1e-5
 TRAINING_FLAG = True
+EPOCH = 500
 SNAPSHOT_DIR = './checkpoint'
 LOG_DIR = './logs'
+TRAIN_ID_FILE = 'dataset/dataSets/train_id.txt'
+TEST_ID_FIEL = 'dataset/dataSets/test_id.txt'
 
 # Network Parameters
 n_hidden_1 = 8 # 1st layer number of features
@@ -115,36 +115,46 @@ def main(sess):
 
     if TRAINING_FLAG:
         # Iterate over training steps.
+        counter = 1
         fi = open('record.txt', 'w')
-        for step in range(NUM_STEPS):
-            data_id = step * BATCH_SIZE % TOTAL_DATA
-            x_, y_ = load_train_travel_data(data_id, BATCH_SIZE)
+        for ee in xrange(EPOCH):
+            with open(TRAIN_ID_FILE, 'r') as list_file:
+                data_list = list_file.readlines()
+            # np.random.shuffle(data_list)
+            batch_idxs = len(data_list) // BATCH_SIZE
+            
 
-            summary, _ = sess.run([loss_sum, optimizer], feed_dict={data: x_, label: y_})
-            summary_writer.add_summary(summary, step)
+            for idx in xrange(0, batch_idxs):
+                batch_files = data_list[idx*BATCH_SIZE:(idx+1)*BATCH_SIZE]
+                x_, y_ = load_train_travel_data(batch_files)
+                summary, _ = sess.run([loss_sum, optimizer], feed_dict={data: x_, label: y_})
+                summary_writer.add_summary(summary, counter)
+                counter += 1
 
-            if step * 3.0 % SAVE_PRED_EVERY == 0:
-
-                save(saver, sess, SNAPSHOT_DIR, step)
-                ##  Test...
-                error = []
-                for data_id in range(TOTAL_DATA):
-                    x_, y_ = load_train_travel_data(data_id, BATCH_SIZE)        
-                    y, res = sess.run([label, pred], feed_dict={data: x_, label: y_})
-                    for bb in xrange(BATCH_SIZE):
-                        error.append(np.abs(y[bb][0]-res[bb][0])/y[bb][0])
-                test_result = np.mean(error)
-                #print test_result
-            #if step % 2000 == 0:
+            save(saver, sess, SNAPSHOT_DIR, counter)
+            ##  Test...
+            error = []
+            for idx in xrange(0, batch_idxs):
+                batch_files = data_list[idx*BATCH_SIZE:(idx+1)*BATCH_SIZE]
+                x_, y_ = load_train_travel_data(batch_files)        
                 y, res = sess.run([label, pred], feed_dict={data: x_, label: y_})
-                print('test_result: {:f}, epoch {:f}, step {:d}, y = {:.3f}, res = {:.3f}, loss = {:.3f}'.format(test_result, step*3.0/SAVE_PRED_EVERY, step,  y[0][0], res[0][0], np.abs(y[0][0]-res[0][0])/y[0][0]))
-                fi.write('test_result: {:f}, epoch {:f}, step {:d}, y = {:.3f}, res = {:.3f}, loss = {:.3f}\n'.format(test_result, step*3.0/SAVE_PRED_EVERY, step,  y[0][0], res[0][0], np.abs(y[0][0]-res[0][0])/y[0][0]))
+                for bb in xrange(BATCH_SIZE):
+                    error.append(np.abs(y[bb][0]-res[bb][0])/y[bb][0])
+            test_result = np.mean(error)
+
+            y, res = sess.run([label, pred], feed_dict={data: x_, label: y_})
+            print('test_result: {:f}, epoch {:f}, step {:d}, y = {:.3f}, res = {:.3f}, loss = {:.3f}'.format(test_result, ee, counter,  y[0][0], res[0][0], np.abs(y[0][0]-res[0][0])/y[0][0]))
+            fi.write('test_result: {:f}, epoch {:f}, step {:d}, y = {:.3f}, res = {:.3f}, loss = {:.3f}\n'.format(test_result, ee, counter,  y[0][0], res[0][0], np.abs(y[0][0]-res[0][0])/y[0][0]))
         fi.close()
     else:
         error = []
-        for step in range(NUM_STEPS):
-            data_id = step * BATCH_SIZE % TOTAL_DATA
-            x_, y_ = load_train_travel_data(data_id, BATCH_SIZE)        
+        with open(TRAIN_ID_FILE, 'r') as list_file:
+            data_list = list_file.readlines()
+        batch_idxs = len(data_list) // BATCH_SIZE
+
+        for idx in xrange(0, batch_idxs):
+            batch_files = data_list[idx*BATCH_SIZE:(idx+1)*BATCH_SIZE]
+            x_, y_ = load_train_travel_data(batch_files)        
             y, res = sess.run([label, pred], feed_dict={data: x_, label: y_})
             error.append(np.abs(y[0][0]-res[0][0])/y[0][0])
         print np.mean(error)
