@@ -35,7 +35,7 @@ def load_test_travel_data(batch_id):
 def load_train_travel_data_six(idx, BATCH_SIZE):
     x_ = []
     y_ = []
-    ID_FILE = 'dataset/dataSets/train_6_id_aug.txt'
+    ID_FILE = 'dataset/dataSets/train_6_id.txt'
     with open(ID_FILE, 'r') as list_file:
         data_list = list_file.readlines()
     batch_files = data_list[idx*BATCH_SIZE:(idx+1)*BATCH_SIZE]
@@ -54,7 +54,7 @@ def load_train_travel_data_six(idx, BATCH_SIZE):
 def load_train_travel_data_five(idx, BATCH_SIZE):
     x_ = []
     y_ = []
-    ID_FILE = 'dataset/dataSets/train_5_id_aug.txt'
+    ID_FILE = 'dataset/dataSets/train_5_id.txt'
     with open(ID_FILE, 'r') as list_file:
         data_list = list_file.readlines()
     batch_files = data_list[idx*BATCH_SIZE:(idx+1)*BATCH_SIZE]
@@ -73,7 +73,7 @@ def load_train_travel_data_five(idx, BATCH_SIZE):
 def load_train_travel_data_four(idx, BATCH_SIZE):
     x_ = []
     y_ = []
-    ID_FILE = 'dataset/dataSets/train_4_id_aug.txt'
+    ID_FILE = 'dataset/dataSets/train_4_id.txt'
     with open(ID_FILE, 'r') as list_file:
         data_list = list_file.readlines()
     batch_files = data_list[idx*BATCH_SIZE:(idx+1)*BATCH_SIZE]
@@ -92,7 +92,7 @@ def load_train_travel_data_four(idx, BATCH_SIZE):
 def load_train_travel_data_three(idx, BATCH_SIZE):
     x_ = []
     y_ = []
-    ID_FILE = 'dataset/dataSets/train_3_id_aug.txt'
+    ID_FILE = 'dataset/dataSets/train_3_id.txt'
     with open(ID_FILE, 'r') as list_file:
         data_list = list_file.readlines()
     batch_files = data_list[idx*BATCH_SIZE:(idx+1)*BATCH_SIZE]
@@ -111,7 +111,7 @@ def load_train_travel_data_three(idx, BATCH_SIZE):
 def load_train_travel_data_two(idx, BATCH_SIZE):
     x_ = []
     y_ = []
-    ID_FILE = 'dataset/dataSets/train_2_id_aug.txt'
+    ID_FILE = 'dataset/dataSets/train_2_id.txt'
     with open(ID_FILE, 'r') as list_file:
         data_list = list_file.readlines()
     batch_files = data_list[idx*BATCH_SIZE:(idx+1)*BATCH_SIZE]
