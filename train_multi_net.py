@@ -13,16 +13,16 @@ TRAINING_FLAG = True
 EPOCH = 500
 SNAPSHOT_DIR = './checkpoint'
 LOG_DIR = './logs'
-TRAIN_ID_FILE = 'dataset/dataSets/train_id.txt'
+TRAIN_ID_FILE = 'dataset/dataSets/train_1_id.txt'
 TEST_ID_FIEL = 'dataset/dataSets/test_id.txt'
 
 # Network Parameters
-six_input = 8
-five_input = 7
-four_input = 6
-three_input = 5
-two_input = 4
-one_input = 3
+six_input = 9
+five_input = 8
+four_input = 7
+three_input = 6
+two_input = 5
+one_input = 4
 n_classes = 1
 
 
@@ -89,7 +89,7 @@ def main(sess):
     cost3 = tf.reduce_mean(tf.abs(pred3 - label3))
     cost2 = tf.reduce_mean(tf.abs(pred2 - label2))
     cost1 = tf.reduce_mean(tf.abs(pred1 - label1))
-    cost = cost6 + cost5 + cost4 + cost3 + cost2 + cost1
+    cost = (cost6 + cost5 + cost4 + cost3 + cost2 + cost1) / 1.0
     optimizer = tf.train.AdamOptimizer(learning_rate=LEARNING_RATE).minimize(cost)
 
     # loss summary
@@ -127,42 +127,101 @@ def main(sess):
             
 
             for idx in xrange(0, batch_idxs):
-                batch_files = data_list[idx*BATCH_SIZE:(idx+1)*BATCH_SIZE]
-                x_6, y_6 = load_train_travel_data_six(batch_files)
-                x_5, y_5 = load_train_travel_data_five(batch_files)
-                x_4, y_4 = load_train_travel_data_four(batch_files)
+                # batch_files = data_list[idx*BATCH_SIZE:(idx+1)*BATCH_SIZE]
+                x_6, y_6 = load_train_travel_data_six(idx, BATCH_SIZE)
+                x_5, y_5 = load_train_travel_data_five(idx, BATCH_SIZE)
+                x_4, y_4 = load_train_travel_data_four(idx, BATCH_SIZE)
+                x_3, y_3 = load_train_travel_data_three(idx, BATCH_SIZE)
+                x_2, y_2 = load_train_travel_data_two(idx, BATCH_SIZE)
+                x_1, y_1 = load_train_travel_data_one(idx, BATCH_SIZE)
 
-                summary, _ = sess.run([loss_sum, optimizer], feed_dict={data: x_, label: y_})
+                summary, _ = sess.run([loss_sum, optimizer], feed_dict={data6: x_6, label6: y_6, data5: x_5, label5: y_5,
+                                                                        data4: x_4, label4: y_4, data3: x_3, label3: y_3,
+                                                                        data2: x_2, label2: y_2, data1: x_1, label1: y_1,})
                 summary_writer.add_summary(summary, counter)
                 counter += 1
 
             save(saver, sess, SNAPSHOT_DIR, counter)
             ##  Test...
-            error = []
+            error6 = []
+            error5 = []
+            error4 = []
+            error3 = []
+            error2 = []
+            error1 = []
             for idx in xrange(0, batch_idxs):
-                batch_files = data_list[idx*BATCH_SIZE:(idx+1)*BATCH_SIZE]
-                x_, y_ = load_train_travel_data(batch_files)        
-                y, res = sess.run([label, pred], feed_dict={data: x_, label: y_})
-                for bb in xrange(BATCH_SIZE):
-                    error.append(np.abs(y[bb][0]-res[bb][0])/y[bb][0])
-            test_result = np.mean(error)
+                # batch_files = data_list[idx*BATCH_SIZE:(idx+1)*BATCH_SIZE]
+                x_6, y_6 = load_train_travel_data_six(idx, BATCH_SIZE)
+                x_5, y_5 = load_train_travel_data_five(idx, BATCH_SIZE)
+                x_4, y_4 = load_train_travel_data_four(idx, BATCH_SIZE)
+                x_3, y_3 = load_train_travel_data_three(idx, BATCH_SIZE)
+                x_2, y_2 = load_train_travel_data_two(idx, BATCH_SIZE)
+                x_1, y_1 = load_train_travel_data_one(idx, BATCH_SIZE)
 
-            y, res = sess.run([label, pred], feed_dict={data: x_, label: y_})
-            print('test_result: {:f}, epoch {:f}, step {:d}, y = {:.3f}, res = {:.3f}, loss = {:.3f}'.format(test_result, ee, counter,  y[0][0], res[0][0], np.abs(y[0][0]-res[0][0])/y[0][0]))
-            fi.write('test_result: {:f}, epoch {:f}, step {:d}, y = {:.3f}, res = {:.3f}, loss = {:.3f}\n'.format(test_result, ee, counter,  y[0][0], res[0][0], np.abs(y[0][0]-res[0][0])/y[0][0]))
+                y6, res6 = sess.run([label6, pred6], feed_dict={data6: x_6, label6: y_6})
+                y5, res5 = sess.run([label5, pred5], feed_dict={data5: x_5, label5: y_5})
+                y4, res4 = sess.run([label4, pred4], feed_dict={data4: x_4, label4: y_4})
+                y3, res3 = sess.run([label3, pred3], feed_dict={data3: x_3, label3: y_3})
+                y2, res2 = sess.run([label2, pred2], feed_dict={data2: x_2, label2: y_2})
+                y1, res1 = sess.run([label1, pred1], feed_dict={data1: x_1, label1: y_1})
+                for bb in xrange(BATCH_SIZE):
+                    error6.append(np.abs(y6[bb][0]-res6[bb][0])/y6[bb][0])
+                    error5.append(np.abs(y5[bb][0]-res5[bb][0])/y5[bb][0])
+                    error4.append(np.abs(y4[bb][0]-res4[bb][0])/y4[bb][0])
+                    error3.append(np.abs(y3[bb][0]-res3[bb][0])/y3[bb][0])
+                    error2.append(np.abs(y2[bb][0]-res2[bb][0])/y2[bb][0])
+                    error1.append(np.abs(y1[bb][0]-res1[bb][0])/y1[bb][0])
+            test_res6 = np.mean(error6)
+            test_res5 = np.mean(error5)
+            test_res4 = np.mean(error4)
+            test_res3 = np.mean(error3)
+            test_res2 = np.mean(error2)
+            test_res1 = np.mean(error1)
+
+            print('epoch {:f}, step {:d}'.format(ee, counter))
+            print('six: {:f}, five: {:f}, four: {:f}, three: {:f}, two: {:f}, one: {:f}'.format(test_res6, test_res5, test_res4, test_res3, test_res2, test_res1))
+            fi.write('six: {:f}, five: {:f}, four: {:f}, three: {:f}, two: {:f}, one: {:f}'.format(test_res6, test_res5, test_res4, test_res3, test_res2, test_res1))
         fi.close()
     else:
-        error = []
+        error6 = []
+        error5 = []
+        error4 = []
+        error3 = []
+        error2 = []
+        error1 = []
         with open(TRAIN_ID_FILE, 'r') as list_file:
             data_list = list_file.readlines()
         batch_idxs = len(data_list) // BATCH_SIZE
 
         for idx in xrange(0, batch_idxs):
-            batch_files = data_list[idx*BATCH_SIZE:(idx+1)*BATCH_SIZE]
-            x_, y_ = load_train_travel_data(batch_files)        
-            y, res = sess.run([label, pred], feed_dict={data: x_, label: y_})
-            error.append(np.abs(y[0][0]-res[0][0])/y[0][0])
-        print np.mean(error)
+            # batch_files = data_list[idx*BATCH_SIZE:(idx+1)*BATCH_SIZE]
+            x_6, y_6 = load_train_travel_data_six(idx, BATCH_SIZE)
+            x_5, y_5 = load_train_travel_data_five(idx, BATCH_SIZE)
+            x_4, y_4 = load_train_travel_data_four(idx, BATCH_SIZE)
+            x_3, y_3 = load_train_travel_data_three(idx, BATCH_SIZE)
+            x_2, y_2 = load_train_travel_data_two(idx, BATCH_SIZE)
+            x_1, y_1 = load_train_travel_data_one(idx, BATCH_SIZE)
+
+            y6, res6 = sess.run([label6, pred6], feed_dict={data6: x_6, label6: y_6})
+            y5, res5 = sess.run([label5, pred5], feed_dict={data5: x_5, label5: y_5})
+            y4, res4 = sess.run([label4, pred4], feed_dict={data4: x_4, label4: y_4})
+            y3, res3 = sess.run([label3, pred3], feed_dict={data3: x_3, label3: y_3})
+            y2, res2 = sess.run([label2, pred2], feed_dict={data2: x_2, label2: y_2})
+            y1, res1 = sess.run([label1, pred1], feed_dict={data1: x_1, label1: y_1})
+            for bb in xrange(BATCH_SIZE):
+                error6.append(np.abs(y6[bb][0]-res6[bb][0])/y6[bb][0])
+                error5.append(np.abs(y5[bb][0]-res5[bb][0])/y5[bb][0])
+                error4.append(np.abs(y4[bb][0]-res4[bb][0])/y4[bb][0])
+                error3.append(np.abs(y3[bb][0]-res3[bb][0])/y3[bb][0])
+                error2.append(np.abs(y2[bb][0]-res2[bb][0])/y2[bb][0])
+                error1.append(np.abs(y1[bb][0]-res1[bb][0])/y1[bb][0])
+        test_res6 = np.mean(error6)
+        test_res5 = np.mean(error5)
+        test_res4 = np.mean(error4)
+        test_res3 = np.mean(error3)
+        test_res2 = np.mean(error2)
+        test_res1 = np.mean(error1)
+        print('six: {:f}, five: {:f}, four: {:f}, three: {:f}, two: {:f}, one: {:f}').format(test_res6, test_res5, test_res4, test_res3, test_res2, test_res1)
 
 
 
