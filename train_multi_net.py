@@ -93,12 +93,12 @@ def main(sess):
     optimizer = tf.train.AdamOptimizer(learning_rate=LEARNING_RATE).minimize(cost)
 
     # loss summary
-    loss_six = tf.summary.scalar("loss6", cost6)
-    loss_five = tf.summary.scalar("loss5", cost5)
-    loss_four = tf.summary.scalar("loss4", cost4)
-    loss_three = tf.summary.scalar("loss3", cost3)
-    loss_two = tf.summary.scalar("loss2", cost2)
-    loss_one = tf.summary.scalar("loss1", cost1)
+    loss_six = tf.summary.scalar("loss_6", cost6)
+    loss_five = tf.summary.scalar("loss_5", cost5)
+    loss_four = tf.summary.scalar("loss_4", cost4)
+    loss_three = tf.summary.scalar("loss_3", cost3)
+    loss_two = tf.summary.scalar("loss_2", cost2)
+    loss_one = tf.summary.scalar("loss_1", cost1)
     loss = tf.summary.scalar("loss", cost)
     loss_sum = tf.summary.merge([loss, loss_six, loss_five, loss_four, loss_three, loss_two, loss_one])
     summary_writer = tf.summary.FileWriter(LOG_DIR, graph=tf.get_default_graph())
@@ -177,10 +177,11 @@ def main(sess):
             test_res3 = np.mean(error3)
             test_res2 = np.mean(error2)
             test_res1 = np.mean(error1)
+            ave_res = np.mean([test_res6, test_res5, test_res4, test_res3, test_res2, test_res1])
 
             print('epoch {:f}, step {:d}'.format(ee, counter))
-            print('six: {:f}, five: {:f}, four: {:f}, three: {:f}, two: {:f}, one: {:f}'.format(test_res6, test_res5, test_res4, test_res3, test_res2, test_res1))
-            fi.write('six: {:f}, five: {:f}, four: {:f}, three: {:f}, two: {:f}, one: {:f}'.format(test_res6, test_res5, test_res4, test_res3, test_res2, test_res1))
+            print('ave: {:f}, six: {:f}, five: {:f}, four: {:f}, three: {:f}, two: {:f}, one: {:f}'.format(ave_res, test_res6, test_res5, test_res4, test_res3, test_res2, test_res1))
+            fi.write('ave: {:f}, six: {:f}, five: {:f}, four: {:f}, three: {:f}, two: {:f}, one: {:f}'.format(ave_res, test_res6, test_res5, test_res4, test_res3, test_res2, test_res1))
         fi.close()
     else:
         error6 = []
