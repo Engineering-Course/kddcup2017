@@ -7,9 +7,9 @@ os.environ["CUDA_VISIBLE_DEVICES"]="0"
 
 # Parameters
 BATCH_SIZE = 5
-LEARNING_RATE = 1e-5
-TRAINING_FLAG = True
-EPOCH = 500
+LEARNING_RATE = 5e-6
+TRAINING_FLAG = False#True
+EPOCH = 2000
 SNAPSHOT_DIR = './checkpoint'
 LOG_DIR = './logs'
 TRAIN_ID_FILE = 'dataset/dataSets/train_id.txt'
@@ -17,8 +17,8 @@ TEST_ID_FIEL = 'dataset/dataSets/test_id.txt'
 
 # Network Parameters
 n_hidden_1 = 9 # 1st layer number of features
-n_hidden_2 = 12 # 2nd layer number of features
-n_hidden_3 = 16
+n_hidden_2 = 9 # 2nd layer number of features
+n_hidden_3 = 18
 n_input = 9
 n_classes = 1
 
@@ -156,7 +156,8 @@ def main(sess):
             batch_files = data_list[idx*BATCH_SIZE:(idx+1)*BATCH_SIZE]
             x_, y_ = load_train_travel_data(batch_files)        
             y, res = sess.run([label, pred], feed_dict={data: x_, label: y_})
-            error.append(np.abs(y[0][0]-res[0][0])/y[0][0])
+            for bb in xrange(BATCH_SIZE):
+                error.append(np.abs(y[bb][0]-res[bb][0])/y[bb][0])
         print np.mean(error)
 
 

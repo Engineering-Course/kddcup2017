@@ -12,8 +12,8 @@ SNAPSHOT_DIR = './checkpoint'
 
 # Network Parameters
 n_hidden_1 = 9 # 1st layer number of features
-n_hidden_2 = 12 # 2nd layer number of features
-n_hidden_3 = 16
+n_hidden_2 = 9 # 2nd layer number of features
+n_hidden_3 = 18
 n_input = 9
 n_classes = 1
 
@@ -45,24 +45,6 @@ def network(data, name):
     out_layer = tf.matmul(layer_3, weights['out']) + biases['out']
     return out_layer
 
-def save(saver, sess, logdir, step):
-    '''Save weights.   
-    Args:
-     saver: TensorFlow Saver object.
-     sess: TensorFlow session.
-     logdir: path to the snapshots directory.
-     step: current training step.
-    '''
-    if not os.path.exists(logdir):
-        os.makedirs(logdir)   
-    model_name = 'model.ckpt'
-    checkpoint_path = os.path.join(logdir, model_name)
-      
-    if not os.path.exists(logdir):
-      os.makedirs(logdir)
-    saver.save(sess, checkpoint_path, global_step=step)
-    print('The checkpoint has been created.')
-
 def load(saver, sess, ckpt_path):
     '''Load trained weights.
     
@@ -89,7 +71,6 @@ def main(sess):
     # Saver for storing checkpoints of the model.
     # Restore variables
     restore_var = tf.global_variables()
-    saver = tf.train.Saver(var_list=restore_var, max_to_keep=100)
     loader = tf.train.Saver(var_list=restore_var)
     if load(loader, sess, SNAPSHOT_DIR):
         print(" [*] Load SUCCESS")
@@ -97,8 +78,7 @@ def main(sess):
         print(" [!] Load failed...")    
 
     for step in range(NUM_STEPS):
-        data_id = step * BATCH_SIZE
-        x_ = load_test_travel_data(data_id, BATCH_SIZE)
+        x_ = load_test_travel_data(step)
         y_ = []
         # print x_[0]
         for win in xrange(6):
