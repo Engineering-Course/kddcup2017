@@ -8,11 +8,11 @@ os.environ["CUDA_VISIBLE_DEVICES"]="0"
 
 # Parameters
 BATCH_SIZE = 5
-LEARNING_RATE = 1e-5
+LEARNING_RATE = 5e-6
 TRAINING_FLAG = True
-EPOCH = 500
-SNAPSHOT_DIR = './checkpoint'
-LOG_DIR = './logs'
+EPOCH = 2000
+SNAPSHOT_DIR = './checkpoint_multi'
+LOG_DIR = './logs/multi'
 TRAIN_ID_FILE = 'dataset/dataSets/train_1_id.txt'
 TEST_ID_FIEL = 'dataset/dataSets/test_id.txt'
 
@@ -89,7 +89,7 @@ def main(sess):
     cost3 = tf.reduce_mean(tf.abs(pred3 - label3))
     cost2 = tf.reduce_mean(tf.abs(pred2 - label2))
     cost1 = tf.reduce_mean(tf.abs(pred1 - label1))
-    cost = (cost6 + cost5 + cost4 + cost3 + cost2 + cost1) / 1.0
+    cost = (cost6 + cost5 + cost4 + cost3 + cost2 + cost1) / 6.0
     optimizer = tf.train.AdamOptimizer(learning_rate=LEARNING_RATE).minimize(cost)
 
     # loss summary
@@ -118,7 +118,7 @@ def main(sess):
     if TRAINING_FLAG:
         # Iterate over training steps.
         counter = 1
-        fi = open('record.txt', 'w')
+        fi = open('record_all.txt', 'w')
         for ee in xrange(EPOCH):
             with open(TRAIN_ID_FILE, 'r') as list_file:
                 data_list = list_file.readlines()

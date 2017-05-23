@@ -4,12 +4,12 @@ import os
 import time
 from load_data import *
 from model_setting import *
-os.environ["CUDA_VISIBLE_DEVICES"]="0"
+os.environ["CUDA_VISIBLE_DEVICES"]="3"
 
 # Parameters
 BATCH_SIZE = 5
 LEARNING_RATE = 1e-5
-TRAINING_FLAG = False#True
+TRAINING_FLAG = True
 EPOCH = 3000
 SNAPSHOT_DIR = './checkpoint1'
 LOG_DIR = './logs/one'

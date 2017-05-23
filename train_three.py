@@ -4,7 +4,7 @@ import os
 import time
 from load_data import *
 from model_setting import *
-os.environ["CUDA_VISIBLE_DEVICES"]="0"
+os.environ["CUDA_VISIBLE_DEVICES"]="1"
 
 # Parameters
 BATCH_SIZE = 5
