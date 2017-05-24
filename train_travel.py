@@ -7,9 +7,9 @@ os.environ["CUDA_VISIBLE_DEVICES"]="0"
 
 # Parameters
 BATCH_SIZE = 5
-LEARNING_RATE = 5e-6
-TRAINING_FLAG = False#True
-EPOCH = 2000
+LEARNING_RATE = 1e-5
+TRAINING_FLAG = True
+EPOCH = 5000
 SNAPSHOT_DIR = './checkpoint'
 LOG_DIR = './logs'
 TRAIN_ID_FILE = 'dataset/dataSets/train_id.txt'
@@ -32,10 +32,10 @@ weights = {
     'out': tf.Variable(tf.random_normal([n_hidden_3, n_classes], stddev=0.1))
 }
 biases = {
-    'b1': tf.Variable(tf.random_normal([n_hidden_1], stddev=0.1)),
-    'b2': tf.Variable(tf.random_normal([n_hidden_2], stddev=0.1)),
-    'b3': tf.Variable(tf.random_normal([n_hidden_3], stddev=0.1)),
-    'out': tf.Variable(tf.random_normal([n_classes], stddev=0.1))
+    'b1': tf.Variable(tf.constant(0.0, shape=[n_hidden_1])),
+    'b2': tf.Variable(tf.constant(0.0, shape=[n_hidden_2])),
+    'b3': tf.Variable(tf.constant(0.0, shape=[n_hidden_3])),
+    'out': tf.Variable(tf.constant(0.0, shape=[n_classes]))
 }
 
 def network(data, name):
