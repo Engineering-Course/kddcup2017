@@ -67,9 +67,9 @@ def create(in_file):
                     temp_time = start_time_window
         if len(six_time) == 6:
             if (str(0)) in six_time:
-                fw = open('testing_six/miss_{}_{}.txt'.format(intersection_id+'-'+tollgate_id, start_time_window), 'w')
+                fw = open('testing_six/travel_{}_miss.txt'.format(count), 'w')
             else:
-                fw = open('testing_six/{}_{}.txt'.format(intersection_id+'-'+tollgate_id, start_time_window), 'w')
+                fw = open('testing_six/travel_{}.txt'.format(count), 'w')
             route_id = route_dict[intersection_id+'-'+tollgate_id]
             obj_time = start_time_window.hour * 60 + start_time_window.minute
             fw.write(str(route_id))
@@ -79,6 +79,7 @@ def create(in_file):
             weekday = start_time_window.weekday() * 30 + 100
             fw.write(' ' + str(weekday))
             fw.close()
+            count += 1
 
         # print six_time
             # six_time = []
