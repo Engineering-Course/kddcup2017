@@ -8,9 +8,9 @@ os.environ["CUDA_VISIBLE_DEVICES"]="1"
 
 # Parameters
 BATCH_SIZE = 5
-LEARNING_RATE = 1e-5
+LEARNING_RATE = 5e-6
 TRAINING_FLAG = True
-EPOCH = 3000
+EPOCH = 5000
 SNAPSHOT_DIR = './checkpoint4'
 LOG_DIR = './logs/four'
 TRAIN_ID_FILE = 'dataset/dataSets/train_4_id.txt'
@@ -109,7 +109,7 @@ def main(sess):
     # Saver for storing checkpoints of the model.
     # Restore variables
     restore_var = tf.global_variables()
-    saver = tf.train.Saver(var_list=restore_var, max_to_keep=3000)
+    saver = tf.train.Saver(var_list=restore_var, max_to_keep=5000)
     loader = tf.train.Saver(var_list=restore_var)
     if load(loader, sess, SNAPSHOT_DIR):
         print(" [*] Load SUCCESS")
