@@ -51,6 +51,7 @@ def create(in_file):
                 fw.write(' ' + str(obj_time/4.0))
                 weekday = start_time_window.weekday() * 30 + 100
                 fw.write(' ' + str(weekday))
+                fw.close()
                 
 
                 # add weather
