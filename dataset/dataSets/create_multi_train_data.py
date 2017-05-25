@@ -36,7 +36,7 @@ def create(in_file, num_window):
             six_time.append(travel_time)
             if len(six_time) == num_window:
                 # print six_time
-                with open('multi_train_data/travel_{}_{}.txt'.format(num_window-1, count), 'w') as fw:
+                with open('data_training/travel_{}_{}.txt'.format(num_window-1, count), 'w') as fw:
                     route_id = route_dict[intersection_id+'-'+tollgate_id]
                     obj_time = start_time_window.hour * 60 + start_time_window.minute
                     fw.write(str(route_id))
@@ -61,7 +61,7 @@ def create(in_file, num_window):
 
 def main():
 
-    in_file = 'training/training_20min_avg_travel_time'
+    in_file = 'training/training-all_20min_avg_travel_time'
     for i in xrange(6):
         create(in_file, i+2)
 

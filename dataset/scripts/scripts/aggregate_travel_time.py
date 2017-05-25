@@ -68,7 +68,7 @@ def avgTravelTime(in_file):
 
 def main():
 
-    in_file = 'trajectories(table 5)_test1'
+    in_file = 'trajectories(table 5)_test-all'
     avgTravelTime(in_file)
 
 if __name__ == '__main__':
