@@ -74,10 +74,10 @@ def create(in_file):
             obj_time = start_time_window.hour * 60 + start_time_window.minute
             fw.write(str(route_id))
             for tt in six_time:
-                fw.write(',' + tt)
-            fw.write(',' + str(obj_time/4.0))
+                fw.write(' ' + tt)
+            fw.write(' ' + str(obj_time/4.0))
             weekday = start_time_window.weekday() * 30 + 100
-            fw.write(',' + str(weekday))
+            fw.write(' ' + str(weekday))
             fw.close()
             count += 1
 

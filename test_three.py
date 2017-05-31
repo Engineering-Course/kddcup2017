@@ -8,6 +8,8 @@ os.environ["CUDA_VISIBLE_DEVICES"]="0"
 # Parameters
 BATCH_SIZE = 1
 SNAPSHOT_DIR = './checkpoint/useful_three'
+DATA_DIR = './result_combine/testing_six_stage5'
+TEST_ONE = False
 
 # Network Parameters
 n_hidden_1 = 6 # 1st layer number of features
@@ -53,16 +55,35 @@ def main(sess):
     else:
         print(" [!] Load failed...")    
 
-    #  input data 
-    link = 241.0
-    # t1 = 102.83
-    # t2 = 106.34
-    # t3 = 141.43
-    hour = 115.0
-    day = 190
-    x_ = np.array([260.66,192.88,162.90307617,154.25831604,115.0,250])
-    res = sess.run(pred, feed_dict={data: [x_]})
-    print res
+    if TEST_ONE:
+        #  input data 
+        link = 241.0
+        # t1 = 102.83
+        # t2 = 106.34
+        # t3 = 141.43
+        hour = 115.0
+        day = 190
+        x_ = np.array([260.66,86.95,191.25,124.9373703,115.0,220])
+        res = sess.run(pred, feed_dict={data: [x_]})
+        print res
+    else:
+        for root, dirs, files in os.walk(DATA_DIR):
+            for fname in files:
+                test_file = os.path.join(root, fname)
+                x_ = []
+                y_ = []            
+                with open(test_file, 'r') as fr:
+                    line_ = fr.readline()
+                data_ = line_.split(' ')
+                data_ = data_[:-1]
+                item_x = [float(tt) for tt in data_]
+                x_.append(item_x)
+                del x_[0][1:4]
+
+                res = sess.run(pred, feed_dict={data: x_})
+
+                with open('result_combine/stage_6/three/{}'.format(fname), 'w') as fi:
+                    fi.write(str(res[0][0]) + ' ')
 
 
 if __name__ == '__main__':

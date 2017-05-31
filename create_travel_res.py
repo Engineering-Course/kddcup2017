@@ -35,7 +35,7 @@ def create(in_file, out_file_name):
             res = res[0].split(' ')
         for jj in xrange(6):
             end_time_window = start_time_window + timedelta(minutes=20)
-            out_line = ','.join([intersection_id, tollgate_id, '"[' + str(start_time_window) + ',' + str(end_time_window) + ')"', str(res[jj])]) + '\n'
+            out_line = ','.join([intersection_id, tollgate_id, '"[' + str(start_time_window) + ',' + str(end_time_window) + ')"', str(round(float(res[jj]), 2))]) + '\n'
     
             fw.writelines(out_line)
             start_time_window = end_time_window

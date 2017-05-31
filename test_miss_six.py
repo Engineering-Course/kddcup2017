@@ -87,7 +87,7 @@ def main(sess):
                 y_ = []            
                 with open(test_file, 'r') as fr:
                     line_ = fr.readline()
-                data_ = line_.split(',')
+                data_ = line_.split(' ')
                 item_x = [float(tt) for tt in data_]
                 x_.append(item_x)
 
@@ -101,7 +101,23 @@ def main(sess):
                 for ii in xrange(6):
                     fi.write(str(y_[ii]) + ' ')
                 fi.close()
+        # for root, dirs, files in os.walk(DATA_DIR):
+        #     for fname in files:
+        #         test_file = os.path.join(root, fname)
+        #         x_ = []
+        #         y_ = []            
+        #         with open(test_file, 'r') as fr:
+        #             line_ = fr.readline()
+        #         data_ = line_.split(' ')
+        #         data_ = data_[:-1]
 
+        #         item_x = [float(tt) for tt in data_]
+        #         x_.append(item_x)
+
+        #         res = sess.run(pred, feed_dict={data: x_})
+
+        #         with open('result_combine/stage_6/six/{}'.format(fname), 'w') as fi:
+        #             fi.write(str(res[0][0]) + ' ')
 
 
 if __name__ == '__main__':
