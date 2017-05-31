@@ -10,15 +10,16 @@ window = 2
 phrase = 'two'
 BATCH_SIZE = 5
 LEARNING_RATE = 1e-5
-TRAINING_FLAG = True
+TRAINING_FLAG = False#True
 EPOCH = 5000
-SNAPSHOT_DIR = './checkpoint/ck_{}'.format(phrase)
+# SNAPSHOT_DIR = './checkpoint/ck_{}'.format(phrase)
+SNAPSHOT_DIR = './checkpoint/useful_two'
 LOG_DIR = './logs/{}'.format(phrase)
 TRAIN_ID_FILE = 'dataset/dataSets/train_{}_id.txt'.format(window)
 
 # Network Parameters
 n_hidden_1 = 5 # 1st layer number of features
-n_hidden_2 = 5 # 2nd layer number of features
+n_hidden_2 = 10 # 2nd layer number of features
 n_input = 5
 n_classes = 1
 

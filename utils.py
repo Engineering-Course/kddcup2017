@@ -21,7 +21,7 @@ def load_train_travel_data(batch_files, window):
 
 def load_test_travel_data(batch_id):
     x_ = []
-    filename = 'dataset/dataSets/testing_travel_data/travel_{}.txt'.format(batch_id)
+    filename = 'dataset/dataSets/testing_six/travel_{}.txt'.format(batch_id)
     with open(filename, 'r') as fr:
         line_ = fr.readline()
     data_ = line_.split(' ')
@@ -31,6 +31,21 @@ def load_test_travel_data(batch_id):
     return np.array(x_)
 
 
+def load_train_zero_data(batch_files, window):
+    x_ = []
+    y_ = []
+    for id_ in xrange(len(batch_files)):
+        filename = 'dataset/dataSets/{}_data_zero_training/travel_{}.txt'.format(window, batch_files[id_][:-1])
+        with open(filename, 'r') as fr:
+            line_ = fr.readline()
+        data_ = line_.split(' ')
+        item_x = [float(tt) for tt in data_]
+        item_y = [item_x[window+1]]
+        del item_x[window+1]
+        x_.append(item_x)
+        y_.append(item_y)
+
+    return np.array(x_), np.array(y_)
 
 def save(saver, sess, logdir, step):
     '''Save weights.   

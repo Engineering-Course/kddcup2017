@@ -30,7 +30,7 @@ def create(in_file, out_file_name):
         start_time_window = datetime(start_time.year, start_time.month, start_time.day, start_time.hour, start_time.minute, 0)
         start_time_window = start_time_window + timedelta(minutes=120)
 
-        with open('result/{}.txt'.format(count), 'r') as fi:
+        with open('result_six/travel_{}.txt'.format(count), 'r') as fi:
             res = fi.readlines()
             res = res[0].split(' ')
         for jj in xrange(6):
@@ -44,7 +44,7 @@ def create(in_file, out_file_name):
 
 
 def main():
-    in_file = 'dataset/dataSets/testing/test1_20min_avg_travel_time_update'
+    in_file = 'dataset/dataSets/testing/test2_fill_travel_time'
     out_file_name = 'my_travel_result.csv'
     create(in_file, out_file_name)
 

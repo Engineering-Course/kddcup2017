@@ -67,17 +67,17 @@ def create(in_file):
                     temp_time = start_time_window
         if len(six_time) == 6:
             if (str(0)) in six_time:
-                fw = open('testing_six/travel_{}_miss.txt'.format(count), 'w')
+                fw = open('testing_six_miss/travel_{}_miss.txt'.format(count), 'w')
             else:
                 fw = open('testing_six/travel_{}.txt'.format(count), 'w')
             route_id = route_dict[intersection_id+'-'+tollgate_id]
             obj_time = start_time_window.hour * 60 + start_time_window.minute
             fw.write(str(route_id))
             for tt in six_time:
-                fw.write(' ' + tt)
-            fw.write(' ' + str(obj_time/4.0))
+                fw.write(',' + tt)
+            fw.write(',' + str(obj_time/4.0))
             weekday = start_time_window.weekday() * 30 + 100
-            fw.write(' ' + str(weekday))
+            fw.write(',' + str(weekday))
             fw.close()
             count += 1
 
@@ -126,7 +126,7 @@ def main():
     # weather_file = 'testing/weather (table 7)_test1'
     # read_weather_data(weather_file)
     # in_file = 'training/training_20min_avg_travel_time'
-    in_file = 'testing/test1_20min_avg_travel_time_miss_endtime'
+    in_file = 'testing/test2_fill_travel_time'
     create(in_file)
 
 if __name__ == '__main__':

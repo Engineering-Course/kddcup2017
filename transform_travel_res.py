@@ -21,6 +21,7 @@ def load_result(in_file):
         start_time_window = datetime(start_time.year, start_time.month, start_time.day, start_time.hour, start_time.minute, 0)
         t_time = float(each_traj[-1])
 
+
         route_id = intersection_id + '-' + tollgate_id
         if route_id not in travel_times.keys():
             travel_times[route_id] = {}
@@ -50,6 +51,7 @@ def create(example_file,out_file_name):
         interval_left = each_traj[2][1:]
         start_time = datetime.strptime(interval_left, "%Y-%m-%d %H:%M:%S")
         start_time_window = datetime(start_time.year, start_time.month, start_time.day, start_time.hour, start_time.minute, 0)
+        start_time_window = start_time_window + timedelta(days=7)
         end_time_window = start_time_window + timedelta(minutes=20)
         
         route_id = intersection_id + '-' + tollgate_id

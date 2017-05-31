@@ -10,9 +10,10 @@ window = 5
 phrase = 'five'
 BATCH_SIZE = 5
 LEARNING_RATE = 1e-5
-TRAINING_FLAG = True
+TRAINING_FLAG = False#True
 EPOCH = 5000
-SNAPSHOT_DIR = './checkpoint/ck_{}'.format(phrase)
+# SNAPSHOT_DIR = './checkpoint/ck_{}'.format(phrase)
+SNAPSHOT_DIR = './checkpoint/useful_five'
 LOG_DIR = './logs/{}'.format(phrase)
 TRAIN_ID_FILE = 'dataset/dataSets/train_{}_id.txt'.format(window)
 

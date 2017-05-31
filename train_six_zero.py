@@ -6,22 +6,22 @@ from utils import *
 os.environ["CUDA_VISIBLE_DEVICES"]="0"
 
 # Parameters
-window = 4
-phrase = 'four'
+window = 6
+phrase = 'six'
 BATCH_SIZE = 5
 LEARNING_RATE = 1e-5
-TRAINING_FLAG = False#True
+TRAINING_FLAG = True
 EPOCH = 5000
-# SNAPSHOT_DIR = './checkpoint/ck_{}'.format(phrase)
-SNAPSHOT_DIR = './checkpoint/useful_four'
-LOG_DIR = './logs/{}'.format(phrase)
-TRAIN_ID_FILE = 'dataset/dataSets/train_{}_id.txt'.format(window)
+SNAPSHOT_DIR = './checkpoint/ck_{}_zero'.format(phrase)
+# SNAPSHOT_DIR = './checkpoint/useful_zero_six'
+LOG_DIR = './logs/{}_zero'.format(phrase)
+TRAIN_ID_FILE = 'dataset/dataSets/train_zero_{}_id.txt'.format(window)
 
 # Network Parameters
-n_hidden_1 = 7 # 1st layer number of features
-n_hidden_2 = 7 # 2nd layer number of features
-n_hidden_3 = 14
-n_input = 7
+n_hidden_1 = 9 # 1st layer number of features
+n_hidden_2 = 9 # 2nd layer number of features
+n_hidden_3 = 18
+n_input = 9
 n_classes = 1
 
 
@@ -45,6 +45,7 @@ def network(data, name):
     layer_1 = tf.add(tf.matmul(data, weights['h1']), biases['b1'])
     layer_1 = tf.nn.relu(layer_1)
     layer_2 = tf.add(tf.matmul(layer_1, weights['h2']), biases['b2'])
+    layer_2 = tf.nn.relu(layer_2)
     layer_3 = tf.add(tf.matmul(layer_2, weights['h3']), biases['b3'])
     layer_3 = tf.nn.relu(layer_3)
     out_layer = tf.matmul(layer_3, weights['out']) + biases['out']
@@ -79,7 +80,7 @@ def main(sess):
     if TRAINING_FLAG:
         # Iterate over training steps.
         counter = 1
-        fi = open('record/{}.txt'.format(phrase), 'w')
+        fi = open('record/{}_zero.txt'.format(phrase), 'w')
         for ee in xrange(EPOCH):
             with open(TRAIN_ID_FILE, 'r') as list_file:
                 data_list = list_file.readlines()
@@ -88,7 +89,7 @@ def main(sess):
 
             for idx in xrange(0, batch_idxs):
                 batch_files = data_list[idx*BATCH_SIZE:(idx+1)*BATCH_SIZE]
-                x_, y_ = load_train_travel_data(batch_files, window)
+                x_, y_ = load_train_zero_data(batch_files, window)
                 summary, _ = sess.run([loss_sum, optimizer], feed_dict={data: x_, label: y_})
                 summary_writer.add_summary(summary, counter)
                 counter += 1
@@ -97,7 +98,7 @@ def main(sess):
             error = []
             for idx in xrange(0, batch_idxs):
                 batch_files = data_list[idx*BATCH_SIZE:(idx+1)*BATCH_SIZE]
-                x_, y_ = load_train_travel_data(batch_files, window)        
+                x_, y_ = load_train_zero_data(batch_files, window)        
                 y, res = sess.run([label, pred], feed_dict={data: x_, label: y_})
                 for bb in xrange(BATCH_SIZE):
                     error.append(np.abs(y[bb][0]-res[bb][0])/y[bb][0])
@@ -115,7 +116,7 @@ def main(sess):
 
         for idx in xrange(0, batch_idxs):
             batch_files = data_list[idx*BATCH_SIZE:(idx+1)*BATCH_SIZE]
-            x_, y_ = load_train_travel_data(batch_files, window)        
+            x_, y_ = load_train_zero_data(batch_files, window)        
             y, res = sess.run([label, pred], feed_dict={data: x_, label: y_})
             for bb in xrange(BATCH_SIZE):
                 error.append(np.abs(y[bb][0]-res[bb][0])/y[bb][0])
